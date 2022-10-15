@@ -1,6 +1,6 @@
 ﻿using EfCorePeliculas.Entidades;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace EfCorePeliculas
 {
@@ -11,44 +11,24 @@ namespace EfCorePeliculas
 
         }
 
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder.Properties<DateTime>().HaveColumnType("date");
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Genero>().HasKey(x => x.Id);
-
-            modelBuilder.Entity<Genero>().Property(x => x.Nombre)
-                .IsRequired()
-                .HasMaxLength(150);
-
-            modelBuilder.Entity<Actor>().HasKey(x => x.Id);
-            modelBuilder.Entity<Actor>().Property(x => x.Nombre)
-                .IsRequired()
-                .HasMaxLength(150);
-            modelBuilder.Entity<Actor>().Property(x => x.FechaNacimiento)
-                .HasColumnType("date");
-
-            modelBuilder.Entity<Cine>().Property(x => x.Nombre)
-                .IsRequired()
-                .HasMaxLength(150);
-            modelBuilder.Entity<Cine>().Property(x => x.Precio)
-                .HasPrecision(precision: 9, scale: 2);
-
-            modelBuilder.Entity<Pelicula>().Property(x => x.Titulo)
-                .HasMaxLength(150)
-                .IsRequired();
-
-            modelBuilder.Entity<Pelicula>().Property(x => x.FechaEstreno)
-                .HasColumnType("date");
-
-            modelBuilder.Entity<Pelicula>().Property(x => x.PosterURL)
-                .HasMaxLength(500)
-                .IsUnicode(false);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         
         public DbSet<Genero> Generos { get; set; }
         public DbSet<Actor> Actores { get; set; }
         public DbSet<Cine> Cines { get; set; }
         public DbSet<Pelicula> Peliculas { get; set; }
+        public DbSet<CineOferta> CineOfertas { get; set; }
+        public DbSet<SalaDeCine> SalasDeCine { get; set; }
+        public DbSet<PeliculaActor> PeliculasActores { get; set; }
     }
 }
